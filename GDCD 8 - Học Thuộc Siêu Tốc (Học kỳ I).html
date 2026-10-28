@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GDCD 8 - Học Thuộc Siêu Tốc (Học kỳ I)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          },
+          animation: {
+            'bounce-short': 'bounce 0.5s ease-in-out 1',
+            'pulse-subtle': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 3D Flip Card */
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
+
+    /* Blur & Reveal */
+    .blur-mask {
+      filter: blur(5px);
+      user-select: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .blur-mask:hover, .blur-mask.revealed {
+      filter: blur(0);
+      background-color: rgba(99, 102, 241, 0.15);
+    }
+    
+    /* First letter styling */
+    .first-letter-text {
+      letter-spacing: 0.05em;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased flex flex-col transition-colors duration-200">
+
+  <!-- ========================================== -->
+  <!-- COMPACT SINGLE-ROW HORIZONTAL HEADER       -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-50 h-14 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-3 sm:px-5 select-none transition-colors">
+    <!-- Left: Logo & Subject Badge -->
+    <div class="flex items-center gap-2 shrink-0">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-500 text-white flex items-center justify-center font-bold text-base shadow-sm shadow-brand-500/30">
+        ⚡
+      </div>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-1.5 leading-none">
+          <span class="font-bold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight">GDCD 8</span>
+          <span class="text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded">Học Siêu Tốc</span>
+        </div>
+        <span class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight hidden xs:inline">Học kỳ I • Ghi nhớ tức thì</span>
+      </div>
+    </div>
+
+    <!-- Center: Lesson & Mode Navigation Pills (Single Row) -->
+    <div class="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-1 px-1">
+      <!-- Lesson Selector Dropdown / Pills -->
+      <div class="relative shrink-0">
+        <select id="lessonSelect" class="text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 pl-2 pr-7 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition focus:outline-none focus:ring-1 focus:ring-brand-500">
+          <option value="all">📚 Tất cả (Bài 1 - 3)</option>
+          <option value="bai1">🇻🇳 Bài 1: Truyền thống VN</option>
+          <option value="bai2">🌏 Bài 2: Đa dạng dân tộc</option>
+          <option value="bai3">⚡ Bài 3: Cần cù, sáng tạo</option>
+        </select>
+      </div>
+
+      <!-- Mode Switcher Buttons (Inline Pills) -->
+      <nav class="flex items-center bg-slate-100 dark:bg-slate-800/90 p-0.5 rounded-lg border border-slate-200/80 dark:border-slate-700/80 shrink-0" id="modeNav">
+        <button data-mode="ladder" class="mode-btn flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs font-semibold rounded-md transition text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white" title="Bậc thang xóa chữ (Phương pháp ghi nhớ đỉnh cao)">
+          <span>🪜</span><span class="hidden md:inline">Bậc thang</span>
+        </button>
+        <button data-mode="flashcard" class="mode-btn flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs font-semibold rounded-md transition text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white" title="Thẻ nhớ 3D Active Recall">
+          <span>🗂️</span><span class="hidden md:inline">Flashcard</span>
+        </button>
+        <button data-mode="cloze" class="mode-btn flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs font-semibold rounded-md transition text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white" title="Điền khuyết từ khóa trọng tâm">
+          <span>✏️</span><span class="hidden md:inline">Điền từ</span>
+        </button>
+        <button data-mode="quiz" class="mode-btn flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs font-semibold rounded-md transition text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white" title="Trắc nghiệm phản xạ 60 giây">
+          <span>🎯</span><span class="hidden md:inline">Trắc nghiệm</span>
+        </button>
+        <button data-mode="cheat" class="mode-btn flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs font-semibold rounded-md transition text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white" title="Mẹo vè & Sơ đồ tóm tắt 3 phút">
+          <span>💡</span><span class="hidden md:inline">Mẹo nhớ</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Right: Audio / Streak / Theme Tools (Single Line) -->
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <!-- TTS Audio Button -->
+      <button id="ttsBtn" class="p-1.5 sm:px-2.5 sm:py-1 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition flex items-center gap-1" title="Đọc to nội dung bài học bằng giọng tiếng Việt">
+        <span id="ttsIcon">🔊</span>
+        <span class="hidden lg:inline text-[11px]" id="ttsLabel">Nghe đọc</span>
+      </button>
+
+      <!-- Mastery / Progress Indicator -->
+      <div id="masteryBadge" class="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20" title="Mức độ thuộc bài của bạn">
+        <span>🔥</span>
+        <span id="masteryPercent">0%</span>
+      </div>
+
+      <!-- Dark Mode Toggle -->
+      <button id="themeToggle" class="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition" title="Đổi giao diện Sáng / Tối">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN APP CONTAINER (NO FOOTER BELOW)       -->
+  <!-- ========================================== -->
+  <main class="flex-1 w-full max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-6 overflow-y-auto">
+    
+    <!-- SUB-BAR / CONTEXT BAR (Progress & Quick Actions) -->
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+      <div class="flex items-center gap-3">
+        <div id="activeLessonIcon" class="text-2xl sm:text-3xl p-2 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          🇻🇳
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 id="activeLessonTitle" class="font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
+              Bài 1: Tự hào về truyền thống dân tộc Việt Nam
+            </h1>
+            <span id="activeDateBadge" class="text-[10px] font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">T5, 10/9/26</span>
+          </div>
+          <p id="modeDescription" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Phương pháp Bậc thang Xóa chữ: Nhìn chữ cái đầu hoặc từ khóa để kích hoạt trí nhớ siêu tốc.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mode-specific controls bar -->
+      <div id="modeControls" class="flex items-center gap-2 ml-auto">
+        <!-- Will be dynamically updated based on active mode -->
+      </div>
+    </div>
+
+    <!-- VIEW 1: LADDER / PROGRESSIVE ERASURE MODE -->
+    <section id="view-ladder" class="space-y-4">
+      <!-- Difficulty Ladder Level Switcher -->
+      <div class="bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/70 dark:border-indigo-800/60 p-3 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">🪜 Cấp độ ghi nhớ:</span>
+          <span id="levelBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-600 text-white">Cấp 2: Chữ cái đầu</span>
+        </div>
+        <div class="flex items-center gap-1.5 bg-white dark:bg-slate-900 p-1 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
+          <button data-level="1" class="ladder-lvl-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition" title="Xem nguyên văn + highlight từ khóa">
+            1. Đọc hiểu
+          </button>
+          <button data-level="2" class="ladder-lvl-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition" title="Gợi ý chữ cái đầu của mỗi từ (Hiệu quả nhất)">
+            2. Chữ cái đầu
+          </button>
+          <button data-level="3" class="ladder-lvl-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition" title="Che các từ khóa trọng tâm">
+            3. Che từ khóa
+          </button>
+          <button data-level="4" class="ladder-lvl-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition" title="Ẩn hoàn toàn (Tự đọc thầm & click kiểm tra)">
+            4. Thử thách 100%
+          </button>
+        </div>
+      </div>
+
+      <!-- Instruction note -->
+      <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between px-1">
+        <span>💡 <em>Mẹo:</em> Nhấp trực tiếp vào bất kỳ câu hoặc khối từ nào để hiển thị/ẩn nội dung đối chiếu.</span>
+        <button id="ladderRevealAllBtn" class="text-brand-600 dark:text-brand-400 font-semibold hover:underline">
+          Hiện toàn bộ
+        </button>
+      </div>
+
+      <!-- Ladder Cards Container -->
+      <div id="ladderContainer" class="space-y-4">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- VIEW 2: FLASHCARD 3D ACTIVE RECALL MODE -->
+    <section id="view-flashcard" class="hidden flex flex-col items-center">
+      <!-- Flashcard Header & Progress -->
+      <div class="w-full max-w-xl flex items-center justify-between mb-3 text-xs text-slate-500">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-700 dark:text-slate-300">Tiến độ ôn tập:</span>
+          <span id="fcProgressText" class="font-mono font-bold text-brand-600 dark:text-brand-400">1 / 11</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="fcShuffleBtn" class="hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1 transition">
+            <span>🔀</span> Xáo thẻ
+          </button>
+          <button id="fcResetBtn" class="hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1 transition">
+            <span>🔄</span> Đặt lại
+          </button>
+        </div>
+      </div>
+
+      <!-- Flashcard Progress Bar -->
+      <div class="w-full max-w-xl bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden mb-6">
+        <div id="fcProgressBar" class="bg-gradient-to-r from-brand-500 to-indigo-500 h-full w-1/12 transition-all duration-300"></div>
+      </div>
+
+      <!-- The 3D Card -->
+      <div class="w-full max-w-xl h-80 sm:h-96 perspective-1000 cursor-pointer select-none" id="flashcardElement">
+        <div id="fcInner" class="relative w-full h-full duration-500 transform-style-3d shadow-xl rounded-3xl border border-slate-200 dark:border-slate-800">
+          
+          <!-- Front Face (Question) -->
+          <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden">
+            <div class="flex items-center justify-between">
+              <span id="fcLessonBadge" class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+                Bài 1 • Mục 1
+              </span>
+              <span class="text-xs text-slate-400 flex items-center gap-1">
+                <span>🔄</span> Nhấp để lật mặt sau
+              </span>
+            </div>
+
+            <div class="my-auto text-center px-4">
+              <span class="text-3xl sm:text-4xl block mb-3">❓</span>
+              <h3 id="fcQuestion" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-snug">
+                Dân tộc Việt Nam có những truyền thống đáng tự hào nào?
+              </h3>
+              <p class="text-xs text-slate-400 mt-2">Thử nhẩm thuộc lòng câu trả lời trước khi lật thẻ</p>
+            </div>
+
+            <div class="flex items-center justify-center text-xs font-medium text-brand-600 dark:text-brand-400 gap-1.5">
+              <span>Bấm vào thẻ hoặc phím <kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[11px] font-mono">Space</kbd> để xem đáp án</span>
+            </div>
+          </div>
+
+          <!-- Back Face (Answer) -->
+          <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-50/90 to-white dark:from-slate-900 dark:to-indigo-950/40 rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 border-2 border-brand-400/50">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                ✅ Đáp án chuẩn trong vở
+              </span>
+              <span class="text-xs text-slate-400">Nhấp để lật lại câu hỏi</span>
+            </div>
+
+            <div class="my-auto px-2 overflow-y-auto max-h-52">
+              <div id="fcAnswer" class="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-100 leading-relaxed space-y-2">
+                <!-- Answer text with highlighted keywords -->
+              </div>
+            </div>
+
+            <div class="text-center text-xs text-slate-400">
+              Đánh giá mức độ thuộc của bạn bên dưới 👇
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Action Buttons below Flashcard -->
+      <div class="w-full max-w-xl flex items-center justify-between gap-3 mt-6">
+        <button id="fcPrevBtn" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition flex items-center gap-1.5">
+          <span>◀</span> Trước
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button id="fcHardBtn" class="px-4 sm:px-6 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-rose-500/20 transition flex items-center gap-1.5">
+            <span>❌</span> Chưa thuộc
+          </button>
+          <button id="fcEasyBtn" class="px-4 sm:px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5">
+            <span>✨</span> Đã thuộc!
+          </button>
+        </div>
+
+        <button id="fcNextBtn" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition flex items-center gap-1.5">
+          Tiếp <span>▶</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- VIEW 3: CLOZE / FILL IN THE BLANK (WORD BANK) -->
+    <section id="view-cloze" class="hidden space-y-5">
+      <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 p-3 sm:p-4 rounded-2xl flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">✏️</span>
+          <div>
+            <h4 class="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-200">Trò chơi Điền khuyết Từ khóa cốt lõi</h4>
+            <p class="text-[11px] text-amber-700 dark:text-amber-400">Chạm vào từ khóa dưới khay để điền vào ô trống theo đúng thứ tự bài học.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="clozeResetBtn" class="px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition">
+            Làm lại
+          </button>
+          <button id="clozeCheckBtn" class="px-3 py-1.5 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-sm transition">
+            Kiểm tra
+          </button>
+        </div>
+      </div>
+
+      <!-- Cloze Sentence Cards Container -->
+      <div id="clozeContainer" class="space-y-4">
+        <!-- Injected by JS -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: SPEED QUIZ (TRẮC NGHIỆM 60S) -->
+    <section id="view-quiz" class="hidden flex flex-col items-center">
+      <div class="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-8 shadow-sm">
+        
+        <!-- Quiz Meta Bar -->
+        <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold" id="quizCounter">
+              Câu 1 / 12
+            </span>
+            <span class="text-xs text-slate-400" id="quizLessonTag">Bài 1</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 text-xs font-bold text-amber-500">
+              <span>⭐</span> <span id="quizScoreText">0 điểm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Title -->
+        <div class="mb-6">
+          <h3 id="quizQuestion" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
+            Đang tải câu hỏi...
+          </h3>
+        </div>
+
+        <!-- Options Container -->
+        <div id="quizOptions" class="space-y-2.5 mb-6">
+          <!-- 4 options injected here -->
+        </div>
+
+        <!-- Explanation Card (Hidden initially) -->
+        <div id="quizExplanation" class="hidden p-4 rounded-2xl mb-6 text-xs sm:text-sm leading-relaxed">
+          <!-- explanation text -->
+        </div>
+
+        <!-- Quiz Next Button -->
+        <div class="flex items-center justify-between pt-2">
+          <button id="quizRestartBtn" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+            🔄 Bắt đầu lại
+          </button>
+          <button id="quizNextBtn" class="hidden px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5">
+            Câu tiếp theo <span>▶</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Quiz Summary Modal / Card (When finished) -->
+      <div id="quizSummaryCard" class="hidden w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl text-center mt-4">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-4">
+          🏆
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Xuất sắc hoàn thành bài trắc nghiệm!</h3>
+        <p class="text-xs text-slate-500 mb-6">Bạn đã nắm rất vững kiến thức GDCD 8 trong các trang vở.</p>
+
+        <div class="grid grid-cols-3 gap-3 max-w-sm mx-auto mb-6">
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl">
+            <span class="text-xs text-slate-400 block">Số câu đúng</span>
+            <span id="quizFinalCorrect" class="text-lg font-bold text-emerald-600 dark:text-emerald-400">0</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl">
+            <span class="text-xs text-slate-400 block">Tỷ lệ chính xác</span>
+            <span id="quizFinalAccuracy" class="text-lg font-bold text-brand-600 dark:text-brand-400">0%</span>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl">
+            <span class="text-xs text-slate-400 block">Xếp loại</span>
+            <span id="quizFinalRank" class="text-lg font-bold text-amber-500">Giỏi</span>
+          </div>
+        </div>
+
+        <button id="quizRetryAllBtn" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition">
+          Luyện tập lại lần nữa
+        </button>
+      </div>
+    </section>
+
+    <!-- VIEW 5: CHEAT SHEET & MNEMONICS (MẸO NHỚ THẦN TỐC) -->
+    <section id="view-cheat" class="hidden space-y-6">
+      
+      <!-- Bài thơ lục bát 8 truyền thống -->
+      <div class="bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 border border-amber-300/40 dark:border-amber-700/30 p-5 sm:p-6 rounded-3xl">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-2xl">📜</span>
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">Thơ lục bát học thuộc 8 Truyền thống Dân tộc (Bài 1)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Đọc thuộc 6 câu thơ này là nhớ trọn vẹn 100% 8 truyền thống đáng tự hào!</p>
+          </div>
+        </div>
+
+        <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur p-4 sm:p-5 rounded-2xl border border-amber-200/50 dark:border-amber-900/40 font-medium text-sm sm:text-base leading-loose text-slate-800 dark:text-slate-100 text-center space-y-1">
+          <p>Việt Nam truyền thống vẻ vang,</p>
+          <p><span class="font-bold text-rose-600 dark:text-rose-400">YÊU NƯỚC</span>, <span class="font-bold text-indigo-600 dark:text-indigo-400">ĐOÀN KẾT</span> muôn ngàn khắc sâu.</p>
+          <p><span class="font-bold text-emerald-600 dark:text-emerald-400">NHÂN NGHĨA</span>, <span class="font-bold text-amber-600 dark:text-amber-400">HIẾU HỌC</span> đi đầu,</p>
+          <p><span class="font-bold text-sky-600 dark:text-sky-400">CẦN CÙ LAO ĐỘNG</span> dãi dầu nắng mưa.</p>
+          <p><span class="font-bold text-purple-600 dark:text-purple-400">TÔN SƯ TRỌNG ĐẠO</span> sớm trưa,</p>
+          <p><span class="font-bold text-pink-600 dark:text-pink-400">HIẾU THẢO</span> cha mẹ, <span class="font-bold text-teal-600 dark:text-teal-400">UỐNG NƯỚC NHỚ NGUỒN</span>!</p>
+        </div>
+      </div>
+
+      <!-- Bảng so sánh Cần Cù vs Sáng Tạo (Bài 3) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-2xl">⚖️</span>
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">Bảng đối chiếu siêu tốc: Cần Cù vs Sáng Tạo (Bài 3)</h3>
+            <p class="text-xs text-slate-500">Bí quyết phân biệt chuẩn xác để không bao giờ bị nhầm khi làm bài kiểm tra.</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                <th class="p-3 font-bold text-slate-500 dark:text-slate-400 w-1/4">Tiêu chí</th>
+                <th class="p-3 font-bold text-indigo-600 dark:text-indigo-400 w-3/8">Lao động CẦN CÙ</th>
+                <th class="p-3 font-bold text-emerald-600 dark:text-emerald-400 w-3/8">Lao động SÁNG TẠO</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+              <tr>
+                <td class="p-3 font-bold text-slate-700 dark:text-slate-300 bg-slate-50/50 dark:bg-slate-800/30">1. Khái niệm</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300">
+                  <strong class="text-slate-900 dark:text-white">Chăm chỉ, chịu khó</strong> làm việc một cách thường xuyên, phấn đấu hết mình vì công việc.
+                </td>
+                <td class="p-3 text-slate-600 dark:text-slate-300">
+                  <strong class="text-slate-900 dark:text-white">Luôn luôn suy nghĩ, cải tiến</strong> để tìm tòi cái mới, tìm cách giải quyết tối ưu nâng cao chất lượng, hiệu quả.
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-slate-700 dark:text-slate-300 bg-slate-50/50 dark:bg-slate-800/30">2. Biểu hiện</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300">
+                  Chăm chỉ, chịu khó làm việc thường xuyên.
+                </td>
+                <td class="p-3 text-slate-600 dark:text-slate-300">
+                  Suy nghĩ, tìm tòi, cải tiến phương pháp; <strong class="text-slate-900 dark:text-white">nghiêm khắc sửa chữa sai lầm</strong>, rút ra bài học kinh nghiệm.
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-slate-700 dark:text-slate-300 bg-slate-50/50 dark:bg-slate-800/30">3. Ý nghĩa chung</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300" colspan="2">
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>Hoàn thiện phẩm chất, năng lực cá nhân, xây dựng quê hương đất nước.</li>
+                    <li>Tạo nhiều giá trị vật chất, tinh thần, cải thiện nâng cao đời sống.</li>
+                    <li>Được mọi người xung quanh yêu quý, tôn trọng.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-slate-700 dark:text-slate-300 bg-slate-50/50 dark:bg-slate-800/30">4. Học sinh cần làm</td>
+                <td class="p-3 text-slate-600 dark:text-slate-300" colspan="2">
+                  Quý trọng & học hỏi tấm gương cần cù, sáng tạo; <strong class="text-rose-500">phê phán biểu hiện lười biếng, thụ động</strong>.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sơ đồ tóm tắt Bài 2 (Tôn trọng sự đa dạng) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-2xl">🌏</span>
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">Khung xương kiến thức Bài 2: Tôn trọng sự đa dạng của các dân tộc</h3>
+            <p class="text-xs text-slate-500">3 nhánh nội dung cốt lõi của bài học.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50">
+            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 block mb-1">Mục 1: Đặc điểm & Giá trị</span>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Mỗi dân tộc có nét riêng về tính cách, truyền thống, phong tục, ngôn ngữ. Đó là <strong class="text-slate-900 dark:text-white">vốn quý của nhân loại</strong> cần tôn trọng, kế thừa và phát triển.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50">
+            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 block mb-1">Mục 2: Thế nào là tôn trọng?</span>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Tôn trọng tính cách, phong tục; tích cực tiếp thu giá trị tốt đẹp; tự hào chính đáng về dân tộc mình; <strong class="text-rose-500">phê phán kì thị, phân biệt chủng tộc</strong>.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50">
+            <span class="text-xs font-bold text-amber-600 dark:text-amber-400 block mb-1">Mục 3: Ý nghĩa to lớn</span>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Mở rộng hiểu biết; tiếp thu tinh hoa; làm phong phú giá trị dân tộc mình; <strong class="text-slate-900 dark:text-white">củng cố hòa bình, hữu nghị, hợp tác</strong> quốc tế.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- AUDIO / SOUND SYNTHESIZER (Web Audio API)  -->
+  <!-- ========================================== -->
+  <script>
+    // Audio synthesizer using Web Audio API (No external sound files required)
+    const SoundFx = (() => {
+      let ctx = null;
+      const init = () => {
+        if (!ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) ctx = new AudioContext();
+        }
+      };
+      
+      const playTone = (freq, type, duration, delay = 0) => {
+        try {
+          init();
+          if (!ctx) return;
+          if (ctx.state === 'suspended') ctx.resume();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + delay);
+          osc.stop(ctx.currentTime + delay + duration);
+        } catch(e) {
+          console.log('Audio not supported or blocked', e);
+        }
+      };
+
+      return {
+        flip: () => playTone(350, 'sine', 0.08),
+        correct: () => {
+          playTone(523.25, 'sine', 0.12, 0); // C5
+          playTone(659.25, 'sine', 0.15, 0.08); // E5
+          playTone(783.99, 'sine', 0.25, 0.16); // G5
+        },
+        wrong: () => {
+          playTone(280, 'sawtooth', 0.15, 0);
+          playTone(220, 'sawtooth', 0.25, 0.1);
+        },
+        click: () => playTone(600, 'triangle', 0.04)
+      };
+    })();
+
+    // Text To Speech (Web Speech API)
+    const SpeechModule = (() => {
+      let isSpeaking = false;
+      let synth = window.speechSynthesis;
+      let currentUtterance = null;
+
+      const stop = () => {
+        if (synth) {
+          synth.cancel();
+          isSpeaking = false;
+          updateUi(false);
+        }
+      };
+
+      const speak = (text) => {
+        if (!synth) return;
+        stop();
+        if (!text) return;
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        currentUtterance.lang = 'vi-VN';
+        currentUtterance.rate = 0.95; // Slightly slower for better memorization
+        
+        currentUtterance.onend = () => {
+          isSpeaking = false;
+          updateUi(false);
+        };
+        currentUtterance.onerror = () => {
+          isSpeaking = false;
+          updateUi(false);
+        };
+
+        synth.speak(currentUtterance);
+        isSpeaking = true;
+        updateUi(true);
+      };
+
+      const toggle = (textSupplier) => {
+        if (isSpeaking) {
+          stop();
+        } else {
+          speak(textSupplier());
+        }
+      };
+
+      const updateUi = (speaking) => {
+        const icon = document.getElementById('ttsIcon');
+        const label = document.getElementById('ttsLabel');
+        const btn = document.getElementById('ttsBtn');
+        if (icon) icon.textContent = speaking ? '⏹️' : '🔊';
+        if (label) label.textContent = speaking ? 'Dừng đọc' : 'Nghe đọc';
+        if (btn) {
+          if (speaking) {
+            btn.classList.add('bg-rose-100', 'text-rose-600', 'dark:bg-rose-950', 'dark:text-rose-400');
+          } else {
+            btn.classList.remove('bg-rose-100', 'text-rose-600', 'dark:bg-rose-950', 'dark:text-rose-400');
+          }
+        }
+      };
+
+      return { speak, stop, toggle };
+    })();
+  </script>
+
+  <!-- ========================================== -->
+  <!-- MAIN APPLICATION LOGIC                     -->
+  <!-- ========================================== -->
+  <script>
+    const APP_DATA = {"lessons": {"bai1": {"id": "bai1", "title": "Bài 1: Tự hào về truyền thống dân tộc Việt Nam", "shortTitle": "Bài 1: Truyền thống dân tộc", "date": "T5, 10/9/26", "icon": "🇻🇳", "sections": [{"num": 1, "heading": "Các truyền thống đáng tự hào của dân tộc Việt Nam", "question": "Dân tộc Việt Nam có những truyền thống đáng tự hào nào?", "fullText": "Dân tộc Việt Nam có nhiều truyền thống đáng tự hào như: yêu nước, đoàn kết, nhân nghĩa, cần cù lao động, hiếu học, tôn sư trọng đạo, hiếu thảo, uống nước nhớ nguồn,...", "keywords": ["yêu nước", "đoàn kết", "nhân nghĩa", "cần cù lao động", "hiếu học", "tôn sư trọng đạo", "hiếu thảo", "uống nước nhớ nguồn"], "clozeWords": ["yêu nước", "đoàn kết", "nhân nghĩa", "cần cù lao động", "hiếu học", "tôn sư trọng đạo", "hiếu thảo", "uống nước nhớ nguồn"], "summary": "8 truyền thống cốt lõi: Yêu nước - Đoàn kết - Nhân nghĩa - Cần cù - Hiếu học - Tôn sư trọng đạo - Hiếu thảo - Uống nước nhớ nguồn."}, {"num": 2, "heading": "Ý nghĩa của truyền thống dân tộc", "question": "Truyền thống dân tộc có ý nghĩa như thế nào đối với cá nhân và đất nước?", "fullText": "Truyền thống dân tộc góp phần tích cực vào quá trình phát triển của mỗi cá nhân, là nền tảng cho lòng tự hào, tự tôn, cho sự phát triển lành mạnh và hạnh phúc của mỗi người. Giá trị các truyền thống là nền tảng để xây dựng đất nước phát triển vững mạnh, là sức mạnh và bản sắc riêng của Việt Nam trong quá trình hội nhập quốc tế.", "keywords": ["phát triển của mỗi cá nhân", "tự hào, tự tôn", "phát triển lành mạnh và hạnh phúc", "xây dựng đất nước phát triển vững mạnh", "sức mạnh và bản sắc riêng", "hội nhập quốc tế"], "clozeWords": ["tích cực", "nền tảng", "tự hào, tự tôn", "hạnh phúc", "vững mạnh", "sức mạnh", "bản sắc riêng", "hội nhập quốc tế"], "summary": "• Với cá nhân: Nền tảng tự hào, tự tôn, phát triển lành mạnh & hạnh phúc.\n• Với đất nước: Nền tảng phát triển vững mạnh, sức mạnh & bản sắc trong hội nhập quốc tế."}, {"num": 3, "heading": "Biểu hiện của lòng tự hào về truyền thống dân tộc", "question": "Lòng tự hào về truyền thống dân tộc được biểu hiện qua những phương diện nào?", "fullText": "Biểu hiện của lòng tự hào về truyền thống dân tộc được thể hiện thông qua thái độ, cảm xúc, lời nói, việc làm... giữ gìn và phát huy các giá trị truyền thống dân tộc.", "keywords": ["thái độ", "cảm xúc", "lời nói", "việc làm", "giữ gìn và phát huy"], "clozeWords": ["thái độ", "cảm xúc", "lời nói", "việc làm", "giữ gìn", "phát huy"], "summary": "Thể hiện qua 4 mặt: Thái độ - Cảm xúc - Lời nói - Việc làm nhằm giữ gìn & phát huy truyền thống."}, {"num": 4, "heading": "Những việc làm cụ thể để giữ gìn và phát huy truyền thống dân tộc", "question": "Nêu những việc làm cụ thể giữ gìn và phát huy truyền thống dân tộc?", "fullText": "Những việc làm cụ thể giữ gìn và phát huy truyền thống dân tộc như: tìm hiểu về truyền thống, phong tục, tập quán dân tộc; có thái độ trân trọng, trân quý, giữ gìn và phát huy nghệ thuật truyền thống; biết ơn những người có công với đất nước; tham gia các hoạt động đền ơn đáp nghĩa, các văn hóa dân tộc dân gian,... Đồng thời, chúng ta cũng cần biết đánh giá và phê phán những hành vi, việc làm gây tổn hại đến truyền thống dân tộc.", "keywords": ["tìm hiểu", "trân trọng, trân quý", "nghệ thuật truyền thống", "biết ơn", "đền ơn đáp nghĩa", "văn hóa dân tộc dân gian", "đánh giá và phê phán"], "clozeWords": ["tìm hiểu", "trân trọng", "nghệ thuật truyền thống", "biết ơn", "đền ơn đáp nghĩa", "phê phán", "tổn hại"], "summary": "1. Tìm hiểu truyền thống, phong tục tập quán.\n2. Trân quý nghệ thuật truyền thống.\n3. Biết ơn người có công, tham gia đền ơn đáp nghĩa.\n4. Phê phán hành vi tổn hại truyền thống."}]}, "bai2": {"id": "bai2", "title": "Bài 2: Tôn trọng sự đa dạng của các dân tộc", "shortTitle": "Bài 2: Đa dạng dân tộc", "date": "GDCD 8", "icon": "🌏", "sections": [{"num": 1, "heading": "Đặc điểm và giá trị của sự đa dạng giữa các dân tộc", "question": "Mỗi dân tộc có những nét riêng gì và vì sao cần tôn trọng?", "fullText": "Mỗi dân tộc đều có những nét riêng về tính cách, truyền thống, phong tục tập quán, ngôn ngữ,... Đó là những vốn quý của nhân loại cần được tôn trọng, kế thừa và phát triển.", "keywords": ["tính cách", "truyền thống", "phong tục tập quán", "ngôn ngữ", "vốn quý của nhân loại", "tôn trọng, kế thừa và phát triển"], "clozeWords": ["nét riêng", "tính cách", "truyền thống", "phong tục tập quán", "ngôn ngữ", "vốn quý", "kế thừa"], "summary": "Mỗi dân tộc có nét riêng về tính cách, truyền thống, phong tục, ngôn ngữ -> Là vốn quý của nhân loại cần tôn trọng, kế thừa, phát triển."}, {"num": 2, "heading": "Thế nào là tôn trọng sự đa dạng của các dân tộc và nền văn hóa thế giới?", "question": "Thế nào là tôn trọng sự đa dạng của các dân tộc và các nền văn hoá trên thế giới?", "fullText": "Tôn trọng sự đa dạng của các dân tộc và các nền văn hoá trên thế giới là tôn trọng tính cách, truyền thống, phong tục tập quán,... của các dân tộc; luôn tích cực tìm hiểu và tiếp thu những giá trị tốt đẹp của các dân tộc; đồng thời thể hiện lòng tự hào chính đáng về dân tộc mình, phê phán những hành vi kì thị, phân biệt chủng tộc và văn hoá.", "keywords": ["tôn trọng tính cách, truyền thống, phong tục tập quán", "tìm hiểu và tiếp thu", "lòng tự hào chính đáng", "phê phán những hành vi kì thị, phân biệt chủng tộc và văn hoá"], "clozeWords": ["tính cách", "tiếp thu", "giá trị tốt đẹp", "tự hào chính đáng", "kì thị", "phân biệt chủng tộc"], "summary": "• Tôn trọng bản sắc, phong tục các dân tộc.\n• Tích cực tìm hiểu, tiếp thu giá trị tốt đẹp.\n• Tự hào chính đáng về dân tộc mình.\n• Phê phán kì thị, phân biệt chủng tộc & văn hóa."}, {"num": 3, "heading": "Ý nghĩa của việc tôn trọng sự đa dạng của các dân tộc", "question": "Tôn trọng sự đa dạng của các dân tộc đem lại những lợi ích và ý nghĩa gì?", "fullText": "Tôn trọng sự đa dạng của các dân tộc và các nền văn hoá trên thế giới tạo cơ hội để chúng ta có thêm hiểu biết; tiếp thu những tinh hoa văn hoá của các dân tộc khác; làm phong phú thêm những giá trị của dân tộc mình; củng cố niềm tin, sự đồng cảm, hoà hợp và tăng cường tình hữu nghị, hoà bình, hợp tác giữa các quốc gia trên thế giới.", "keywords": ["thêm hiểu biết", "tiếp thu những tinh hoa văn hoá", "làm phong phú thêm những giá trị", "củng cố niềm tin, sự đồng cảm, hoà hợp", "hữu nghị, hoà bình, hợp tác giữa các quốc gia"], "clozeWords": ["hiểu biết", "tinh hoa văn hoá", "phong phú", "niềm tin", "đồng cảm, hoà hợp", "hữu nghị", "hoà bình, hợp tác"], "summary": "1. Mở rộng hiểu biết.\n2. Tiếp thu tinh hoa văn hóa nhân loại.\n3. Làm phong phú giá trị dân tộc mình.\n4. Củng cố đồng cảm, hòa hợp, tăng cường hữu nghị & hợp tác quốc tế."}]}, "bai3": {"id": "bai3", "title": "Bài 3: Lao động cần cù, sáng tạo", "shortTitle": "Bài 3: Lao động cần cù, sáng tạo", "date": "GDCD 8", "icon": "⚡", "sections": [{"num": 1, "heading": "Khái niệm lao động cần cù và lao động sáng tạo", "question": "Thế nào là lao động cần cù? Thế nào là lao động sáng tạo?", "fullText": "Lao động cần cù là chăm chỉ, chịu khó làm việc một cách thường xuyên, phấn đấu hết mình vì công việc. Lao động sáng tạo là luôn luôn suy nghĩ, cải tiến để tìm tòi cái mới, tìm ra cách giải quyết tối ưu nhằm không ngừng nâng cao chất lượng, hiệu quả lao động.", "keywords": ["chăm chỉ, chịu khó", "thường xuyên", "phấn đấu hết mình", "luôn luôn suy nghĩ, cải tiến", "tìm tòi cái mới", "cách giải quyết tối ưu", "nâng cao chất lượng, hiệu quả"], "clozeWords": ["chăm chỉ", "chịu khó", "thường xuyên", "hết mình", "suy nghĩ, cải tiến", "cái mới", "tối ưu", "chất lượng, hiệu quả"], "summary": "• Cần cù: Chăm chỉ, chịu khó làm việc thường xuyên, hết mình vì công việc.\n• Sáng tạo: Luôn suy nghĩ, cải tiến, tìm tòi cái mới, tìm cách giải quyết tối ưu để nâng cao chất lượng & hiệu quả."}, {"num": 2, "heading": "Biểu hiện của lao động cần cù và sáng tạo", "question": "Nêu biểu hiện của lao động cần cù và lao động sáng tạo?", "fullText": "Biểu hiện của lao động cần cù: chăm chỉ, chịu khó làm việc một cách thường xuyên. Biểu hiện của lao động sáng tạo: luôn luôn suy nghĩ, tìm tòi, cải tiến phương pháp để lao động có hiệu quả; nghiêm khắc sửa chữa sai lầm, rút ra bài học kinh nghiệm cho bản thân.", "keywords": ["chăm chỉ, chịu khó làm việc một cách thường xuyên", "luôn luôn suy nghĩ, tìm tòi, cải tiến phương pháp", "nghiêm khắc sửa chữa sai lầm", "rút ra bài học kinh nghiệm"], "clozeWords": ["chăm chỉ", "thường xuyên", "tìm tòi, cải tiến", "hiệu quả", "nghiêm khắc", "sửa chữa sai lầm", "bài học kinh nghiệm"], "summary": "• Biểu hiện Cần cù: Chăm chỉ, chịu khó làm việc thường xuyên.\n• Biểu hiện Sáng tạo: Tìm tòi cải tiến phương pháp; nghiêm khắc sửa sai, rút kinh nghiệm."}, {"num": 3, "heading": "Ý nghĩa của lao động cần cù, sáng tạo", "question": "Cần cù, sáng tạo trong lao động giúp ích gì cho con người và xã hội?", "fullText": "Cần cù, sáng tạo trong lao động giúp con người: Hoàn thiện và phát triển phẩm chất, năng lực của mỗi cá nhân để nâng cao hiệu quả lao động, góp phần xây dựng quê hương, đất nước. Tạo ra được nhiều giá trị vật chất, tinh thần góp phần cải thiện và nâng cao đời sống. Được mọi người yêu quý, tôn trọng.", "keywords": ["hoàn thiện và phát triển phẩm chất, năng lực", "nâng cao hiệu quả lao động", "xây dựng quê hương, đất nước", "giá trị vật chất, tinh thần", "nâng cao đời sống", "yêu quý, tôn trọng"], "clozeWords": ["hoàn thiện", "phẩm chất, năng lực", "xây dựng", "vật chất, tinh thần", "nâng cao đời sống", "yêu quý, tôn trọng"], "summary": "1. Hoàn thiện phẩm chất, năng lực cá nhân, xây dựng đất nước.\n2. Tạo giá trị vật chất & tinh thần, nâng cao đời sống.\n3. Được mọi người yêu quý, tôn trọng."}, {"num": 4, "heading": "Trách nhiệm của học sinh đối với lao động cần cù, sáng tạo", "question": "Học sinh cần làm gì để rèn luyện đức tính cần cù, sáng tạo trong lao động?", "fullText": "Học sinh cần phải quý trọng và học hỏi những tấm gương cần cù, sáng tạo trong lao động; phê phán những biểu hiện lười biếng, thụ động trong lao động.", "keywords": ["quý trọng và học hỏi", "tấm gương cần cù, sáng tạo", "phê phán những biểu hiện lười biếng, thụ động"], "clozeWords": ["quý trọng", "học hỏi", "cần cù, sáng tạo", "phê phán", "lười biếng, thụ động"], "summary": "• Quý trọng & noi gương người cần cù, sáng tạo.\n• Phê phán lối sống lười biếng, thụ động."}]}}, "quiz": [{"id": 1, "lesson": "bai1", "question": "Dân tộc Việt Nam có những truyền thống đáng tự hào nào sau đây?", "options": ["Yêu nước, đoàn kết, nhân nghĩa, cần cù lao động, hiếu học", "Tự do cá nhân, thực dụng, coi trọng quyền lợi trước mắt", "Trông chờ vào sự giúp đỡ của các nước khác", "Chỉ coi trọng truyền thống của các thành phố lớn"], "answer": 0, "explanation": "Theo bài 1, các truyền thống tiêu biểu gồm: yêu nước, đoàn kết, nhân nghĩa, cần cù lao động, hiếu học, tôn sư trọng đạo, hiếu thảo, uống nước nhớ nguồn."}, {"id": 2, "lesson": "bai1", "question": "Đối với mỗi cá nhân, truyền thống dân tộc có ý nghĩa gì?", "options": ["Là gánh nặng khiến bản thân khó hòa nhập với thế giới", "Là nền tảng cho lòng tự hào, tự tôn, cho sự phát triển lành mạnh và hạnh phúc", "Chỉ có ý nghĩa về mặt hình thức trong các dịp lễ tết", "Giúp cá nhân có thể bỏ qua pháp luật khi cần thiết"], "answer": 1, "explanation": "Truyền thống góp phần tích cực vào sự phát triển cá nhân, là nền tảng cho lòng tự hào, tự tôn, hạnh phúc."}, {"id": 3, "lesson": "bai1", "question": "Biểu hiện của lòng tự hào về truyền thống dân tộc được thể hiện qua:", "options": ["Chỉ cần suy nghĩ trong đầu, không cần hành động", "Thái độ, cảm xúc, lời nói, việc làm... giữ gìn và phát huy các giá trị truyền thống", "Luôn bài xích mọi nét văn hóa từ nước ngoài", "Chỉ tham gia khi được nhà trường chấm điểm cao"], "answer": 1, "explanation": "Thể hiện qua thái độ, cảm xúc, lời nói và việc làm cụ thể giữ gìn, phát huy giá trị truyền thống."}, {"id": 4, "lesson": "bai1", "question": "Việc làm nào sau đây thể hiện giữ gìn và phát huy truyền thống dân tộc?", "options": ["Chê bai nghệ thuật dân gian là lỗi thời", "Tìm hiểu phong tục tập quán, tham gia hoạt động đền ơn đáp nghĩa", "Lãng phí của cải, thờ ơ trước lịch sử nước nhà", "Xuyên tạc các sự kiện lịch sử trên mạng xã hội"], "answer": 1, "explanation": "Tìm hiểu phong tục tập quán, trân quý nghệ thuật dân gian, biết ơn người có công là hành động cụ thể."}, {"id": 5, "lesson": "bai2", "question": "Vì sao các nét riêng về phong tục, tập quán, ngôn ngữ của các dân tộc lại cần được tôn trọng?", "options": ["Vì đó là những vốn quý của nhân loại cần được tôn trọng, kế thừa và phát triển", "Vì luật pháp quốc tế ép buộc các nước phải tuân theo", "Vì tất cả các nền văn hóa đều hoàn toàn giống hệt nhau", "Vì phong tục nào cũng bất biến, không bao giờ thay đổi"], "answer": 0, "explanation": "Mỗi dân tộc có nét riêng về văn hóa, ngôn ngữ - đó là vốn quý của nhân loại cần kế thừa và phát triển."}, {"id": 6, "lesson": "bai2", "question": "Tôn trọng sự đa dạng của các dân tộc và các nền văn hóa đòi hỏi chúng ta phải:", "options": ["Bắt chước mọi phong tục của nước khác bất kể tốt hay xấu", "Tôn trọng nét riêng, tiếp thu giá trị tốt đẹp, đồng thời phê phán kì thị, phân biệt chủng tộc", "Chỉ công nhận những dân tộc phát triển hơn mình", "Xóa bỏ hoàn toàn văn hóa truyền thống của nước mình"], "answer": 1, "explanation": "Cần tôn trọng, tiếp thu cái tốt, tự hào chính đáng và kiên quyết phê phán kì thị, phân biệt chủng tộc."}, {"id": 7, "lesson": "bai2", "question": "Ý nghĩa nào sau đây KHÔNG PHẢI là lợi ích của việc tôn trọng sự đa dạng dân tộc?", "options": ["Tạo cơ hội mở rộng hiểu biết và tiếp thu tinh hoa văn hóa", "Tăng cường tình hữu nghị, hòa bình, hợp tác giữa các quốc gia", "Gây chia rẽ, bất đồng và xung đột tôn giáo giữa các nước", "Làm phong phú thêm những giá trị của dân tộc mình"], "answer": 2, "explanation": "Tôn trọng sự đa dạng giúp củng cố niềm tin, hòa hợp và hợp tác quốc tế, chứ không gây xung đột chia rẽ."}, {"id": 8, "lesson": "bai3", "question": "Thế nào là 'Lao động cần cù'?", "options": ["Chăm chỉ, chịu khó làm việc một cách thường xuyên, phấn đấu hết mình vì công việc", "Làm việc khi có người giám sát, hết người giám sát thì nghỉ", "Chỉ làm việc nhẹ nhàng, tránh việc khó nhọc", "Làm việc theo ngẫu hứng, thích thì làm không thích thì thôi"], "answer": 0, "explanation": "Lao động cần cù là chăm chỉ, chịu khó làm việc thường xuyên, phấn đấu hết mình vì công việc."}, {"id": 9, "lesson": "bai3", "question": "Thế nào là 'Lao động sáng tạo'?", "options": ["Luôn tìm đường tắt bỏ bớt quy trình an toàn lao động", "Luôn suy nghĩ, cải tiến để tìm tòi cái mới, tìm cách giải quyết tối ưu nhằm nâng cao chất lượng, hiệu quả", "Làm đúng theo rập khuôn không thay đổi bất cứ điều gì", "Tự ý thay đổi khi chưa nắm vững kiến thức cơ bản"], "answer": 1, "explanation": "Lao động sáng tạo là luôn suy nghĩ, cải tiến, tìm tòi cái mới, tối ưu hóa để nâng cao chất lượng và hiệu quả."}, {"id": 10, "lesson": "bai3", "question": "Hành vi nào sau đây là biểu hiện của lao động sáng tạo?", "options": ["Nghiêm khắc sửa chữa sai lầm, tìm tòi cải tiến phương pháp học tập", "Chép bài tập về nhà của bạn để tiết kiệm thời gian", "Bỏ qua các bước thực hành thí nghiệm", "Bảo thủ, không chịu nghe góp ý của thầy cô và bạn bè"], "answer": 0, "explanation": "Tìm tòi, cải tiến phương pháp, nghiêm khắc sửa chữa sai lầm và rút ra bài học là biểu hiện sáng tạo."}, {"id": 11, "lesson": "bai3", "question": "Cần cù, sáng tạo trong lao động mang lại ý nghĩa gì cho con người?", "options": ["Hoàn thiện phẩm chất năng lực, tạo giá trị vật chất tinh thần và được mọi người quý trọng", "Làm con người trở nên mệt mỏi và không có thời gian phát triển bản thân", "Chỉ có lợi cho xã hội chứ bản thân không nhận được gì", "Giúp trở nên giàu có nhanh chóng mà không cần học hành"], "answer": 0, "explanation": "Giúp hoàn thiện năng lực phẩm chất, nâng cao đời sống vật chất tinh thần, được mọi người quý mến."}, {"id": 12, "lesson": "bai3", "question": "Trách nhiệm của học sinh lớp 8 đối với lao động cần cù, sáng tạo là gì?", "options": ["Chờ khi nào đi làm mới cần rèn luyện đức tính này", "Quý trọng, học hỏi tấm gương cần cù, sáng tạo; phê phán biểu hiện lười biếng, thụ động", "Chỉ cần chăm học lý thuyết, không cần phụ giúp gia đình làm việc nhà", "Bắt chước các bạn lười học trốn tiết"], "answer": 1, "explanation": "Học sinh cần quý trọng, học hỏi tấm gương cần cù sáng tạo và phê phán biểu hiện lười biếng, thụ động."}]};
+
+    // State
+    const state = {
+      currentLesson: 'all', // 'all', 'bai1', 'bai2', 'bai3'
+      currentMode: 'ladder', // 'ladder', 'flashcard', 'cloze', 'quiz', 'cheat'
+      ladderLevel: 2, // 1 (full), 2 (first-letter), 3 (cloze blur), 4 (all blur)
+      fcIndex: 0,
+      fcCards: [],
+      fcFlipped: false,
+      masteryMap: {}, // id -> true/false
+      clozeSelections: {},
+      quizIndex: 0,
+      quizScore: 0,
+      quizAnswers: []
+    };
+
+    // Load mastery from localStorage safely
+    try {
+      const savedMastery = localStorage.getItem('gdcd8_mastery');
+      if (savedMastery) state.masteryMap = JSON.parse(savedMastery);
+    } catch(e) {}
+
+    // Helper: Update Mastery Badge
+    function updateMasteryDisplay() {
+      const totalItems = 11;
+      let masteredCount = 0;
+      for (let i = 1; i <= totalItems; i++) {
+        if (state.masteryMap['fc_' + i]) masteredCount++;
+      }
+      const pct = Math.round((masteredCount / totalItems) * 100);
+      const badge = document.getElementById('masteryPercent');
+      if (badge) badge.textContent = pct + '%';
+    }
+
+    // Helper: Get active sections list based on currentLesson filter
+    function getActiveSections() {
+      const list = [];
+      if (state.currentLesson === 'all') {
+        ['bai1', 'bai2', 'bai3'].forEach(lid => {
+          APP_DATA.lessons[lid].sections.forEach(sec => {
+            list.push({ ...sec, lessonId: lid, lessonTitle: APP_DATA.lessons[lid].title });
+          });
+        });
+      } else {
+        const lid = state.currentLesson;
+        APP_DATA.lessons[lid].sections.forEach(sec => {
+          list.push({ ...sec, lessonId: lid, lessonTitle: APP_DATA.lessons[lid].title });
+        });
+      }
+      return list;
+    }
+
+    // Helper: Convert Vietnamese sentence into First-Letter form
+    // e.g. "Dân tộc Việt Nam có nhiều truyền thống" -> "D... t... V... N... c... n... t... t..."
+    function toFirstLetterPrompt(text) {
+      return text.replace(/([a-zA-ZÀ-ỹ0-9]+)/g, (match) => {
+        return match.charAt(0) + '...';
+      });
+    }
+
+    // Helper: Format Ladder text based on current ladderLevel
+    function formatLadderText(text, keywords, level, uniqueId) {
+      if (level === 1) {
+        // Level 1: Full text with vibrant highlights
+        let highlighted = text;
+        keywords.forEach(kw => {
+          const regex = new RegExp('(' + kw + ')', 'gi');
+          highlighted = highlighted.replace(regex, '<mark class="bg-amber-200 dark:bg-amber-900/60 dark:text-amber-200 text-amber-950 px-1 py-0.5 rounded font-semibold">$1</mark>');
+        });
+        return highlighted;
+      } else if (level === 2) {
+        // Level 2: First-letter prompt (Super powerful retrieval practice!)
+        const prompt = toFirstLetterPrompt(text);
+        return `<span class="first-letter-text font-mono text-slate-700 dark:text-slate-300 font-semibold cursor-pointer" onclick="toggleLadderReveal('${uniqueId}')">${prompt}</span>
+                <div id="reveal_${uniqueId}" class="hidden mt-2 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-normal text-slate-600 dark:text-slate-300 border-l-4 border-indigo-500">
+                  <span class="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5">Đối chiếu nguyên văn:</span>
+                  ${text}
+                </div>`;
+      } else if (level === 3) {
+        // Level 3: Blur keywords (Cloze blur)
+        let masked = text;
+        keywords.forEach(kw => {
+          const regex = new RegExp('(' + kw + ')', 'gi');
+          masked = masked.replace(regex, `<span class="blur-mask inline-block bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold px-1.5 py-0.5 rounded border border-brand-500/20" onclick="this.classList.toggle('revealed')">$1</span>`);
+        });
+        return masked + `<div class="text-[11px] text-slate-400 mt-2 italic">👉 Nhấp vào từ bị mờ để kiểm tra trí nhớ</div>`;
+      } else if (level === 4) {
+        // Level 4: 100% Blind Recall
+        return `<div class="cursor-pointer p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-center text-slate-400 hover:border-brand-500 hover:text-brand-500 transition" onclick="toggleLadderReveal('${uniqueId}')">
+                  <span class="text-sm font-bold block mb-1">🙈 Toàn bộ câu đang bị ẩn</span>
+                  <span class="text-xs">Tự nhẩm thuộc lòng câu này, sau đó nhấp vào đây để kiểm tra đáp án!</span>
+                </div>
+                <div id="reveal_${uniqueId}" class="hidden mt-3 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-200 border-l-4 border-emerald-500">
+                  <span class="font-bold text-emerald-600 dark:text-emerald-400 block mb-1">Đáp án đối chiếu:</span>
+                  ${text}
+                </div>`;
+      }
+    }
+
+    window.toggleLadderReveal = function(id) {
+      const el = document.getElementById('reveal_' + id);
+      if (el) {
+        el.classList.toggle('hidden');
+        SoundFx.click();
+      }
+    };
+
+    // RENDER LADDER VIEW
+    function renderLadderView() {
+      const container = document.getElementById('ladderContainer');
+      const sections = getActiveSections();
+      container.innerHTML = '';
+
+      sections.forEach((sec, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm transition hover:border-brand-300 dark:hover:border-brand-800";
+        
+        const uniqueId = `ladder_${sec.lessonId}_${sec.num}`;
+        const contentHtml = formatLadderText(sec.fullText, sec.keywords, state.ladderLevel, uniqueId);
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 font-bold text-xs flex items-center justify-center shrink-0">
+                ${sec.num}
+              </span>
+              <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
+                ${sec.heading}
+              </h3>
+            </div>
+            <button class="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Nghe câu này" onclick="SpeechModule.speak('${sec.fullText.replace(/'/g, "\'")}')">
+              🔊
+            </button>
+          </div>
+          <div class="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed">
+            ${contentHtml}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // RENDER FLASHCARD VIEW
+    function setupFlashcards() {
+      state.fcCards = getActiveSections();
+      if (state.fcIndex >= state.fcCards.length) state.fcIndex = 0;
+      renderCurrentFlashcard();
+    }
+
+    function renderCurrentFlashcard() {
+      const card = state.fcCards[state.fcIndex];
+      if (!card) return;
+
+      const inner = document.getElementById('fcInner');
+      state.fcFlipped = false;
+      inner.classList.remove('rotate-y-180');
+
+      document.getElementById('fcLessonBadge').textContent = `${card.lessonTitle} • Mục ${card.num}`;
+      document.getElementById('fcQuestion').textContent = card.question;
+      
+      // Highlight keywords in answer
+      let ansHtml = card.fullText;
+      card.keywords.forEach(kw => {
+        const regex = new RegExp('(' + kw + ')', 'gi');
+        ansHtml = ansHtml.replace(regex, '<span class="text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-950/60 px-1 py-0.5 rounded">$1</span>');
+      });
+
+      if (card.summary) {
+        ansHtml += `<div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+          <strong class="text-slate-700 dark:text-slate-300">Ý tóm gọn:</strong><br>${card.summary.replace(/\n/g, '<br>')}
+        </div>`;
+      }
+      document.getElementById('fcAnswer').innerHTML = ansHtml;
+
+      // Progress bar & text
+      document.getElementById('fcProgressText').textContent = `${state.fcIndex + 1} / ${state.fcCards.length}`;
+      const pct = Math.round(((state.fcIndex + 1) / state.fcCards.length) * 100);
+      document.getElementById('fcProgressBar').style.width = pct + '%';
+    }
+
+    function flipFlashcard() {
+      const inner = document.getElementById('fcInner');
+      state.fcFlipped = !state.fcFlipped;
+      if (state.fcFlipped) {
+        inner.classList.add('rotate-y-180');
+      } else {
+        inner.classList.remove('rotate-y-180');
+      }
+      SoundFx.flip();
+    }
+
+    // RENDER CLOZE / WORD BANK VIEW
+    function renderClozeView() {
+      const container = document.getElementById('clozeContainer');
+      const sections = getActiveSections();
+      container.innerHTML = '';
+      state.clozeSelections = {};
+
+      sections.forEach((sec, sIdx) => {
+        const card = document.createElement('div');
+        card.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm";
+
+        // Create cloze sentence by replacing words with blanks
+        let sentence = sec.fullText;
+        const words = sec.clozeWords || [];
+        
+        // Shuffle word bank for this section
+        const bank = [...words].sort(() => Math.random() - 0.5);
+
+        let replacedSentence = sentence;
+        words.forEach((w, wIdx) => {
+          const blankId = `blank_${sIdx}_${wIdx}`;
+          state.clozeSelections[blankId] = { expected: w, filled: '' };
+          
+          const regex = new RegExp('(' + w + ')', 'i');
+          replacedSentence = replacedSentence.replace(regex, `<span id="${blankId}" data-blank-id="${blankId}" class="cloze-slot inline-flex items-center justify-center min-w-[70px] px-2 py-0.5 mx-1 border-b-2 border-brand-500 font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/40 rounded cursor-pointer text-xs" title="Chạm để xoá từ">[ ? ]</span>`);
+        });
+
+        // Generate Bank buttons
+        let bankHtml = '';
+        bank.forEach((w, bIdx) => {
+          const tokenBtnId = `token_${sIdx}_${bIdx}`;
+          bankHtml += `<button id="${tokenBtnId}" data-word="${w}" data-token-id="${tokenBtnId}" data-section-idx="${sIdx}" class="cloze-word-token px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-100 dark:bg-slate-800 dark:hover:bg-brand-950/70 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 transition cursor-pointer">
+            ${w}
+          </button>`;
+        });
+
+        card.innerHTML = `
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Mục ${sec.num}</span>
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white">${sec.heading}</h4>
+          </div>
+          <div class="text-sm leading-loose text-slate-800 dark:text-slate-200 mb-4">
+            ${replacedSentence}
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Từ khoá gợi ý (Chạm để điền):</span>
+            <div class="flex flex-wrap gap-1.5" id="bank_${sIdx}">
+              ${bankHtml}
+            </div>
+          </div>
+          <div id="feedback_${sIdx}" class="hidden mt-3 text-xs font-bold"></div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Attach event listeners for tokens
+      attachClozeListeners();
+    }
+
+    function attachClozeListeners() {
+      // Tap token to fill first empty blank in that section
+      document.querySelectorAll('.cloze-word-token').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const sIdx = btn.getAttribute('data-section-idx');
+          const word = btn.getAttribute('data-word');
+          
+          // Find first unfilled blank in section
+          const slots = document.querySelectorAll(`[id^="blank_${sIdx}_"]`);
+          let targetSlot = null;
+          for (let slot of slots) {
+            const bid = slot.getAttribute('data-blank-id');
+            if (!state.clozeSelections[bid].filled) {
+              targetSlot = slot;
+              break;
+            }
+          }
+
+          if (targetSlot) {
+            const bid = targetSlot.getAttribute('data-blank-id');
+            state.clozeSelections[bid].filled = word;
+            targetSlot.textContent = word;
+            targetSlot.classList.add('bg-indigo-100', 'dark:bg-indigo-950');
+            btn.classList.add('opacity-30', 'pointer-events-none');
+            SoundFx.click();
+          }
+        });
+      });
+
+      // Tap blank slot to clear it and restore token
+      document.querySelectorAll('.cloze-slot').forEach(slot => {
+        slot.addEventListener('click', () => {
+          const bid = slot.getAttribute('data-blank-id');
+          const currentWord = state.clozeSelections[bid].filled;
+          if (currentWord) {
+            // Find disabled token and re-enable
+            const sIdx = bid.split('_')[1];
+            const tokens = document.querySelectorAll(`[data-section-idx="${sIdx}"][data-word="${currentWord}"]`);
+            for (let t of tokens) {
+              if (t.classList.contains('pointer-events-none')) {
+                t.classList.remove('opacity-30', 'pointer-events-none');
+                break;
+              }
+            }
+            state.clozeSelections[bid].filled = '';
+            slot.textContent = '[ ? ]';
+            slot.classList.remove('bg-indigo-100', 'dark:bg-indigo-950', 'text-emerald-600', 'text-rose-600');
+            SoundFx.click();
+          }
+        });
+      });
+    }
+
+    function checkClozeAnswers() {
+      let allCorrect = true;
+      let total = 0;
+      let correctCount = 0;
+
+      for (let bid in state.clozeSelections) {
+        total++;
+        const item = state.clozeSelections[bid];
+        const slot = document.getElementById(bid);
+        if (!slot) continue;
+
+        if (item.filled.toLowerCase().trim() === item.expected.toLowerCase().trim()) {
+          slot.classList.remove('border-brand-500', 'text-rose-600');
+          slot.classList.add('border-emerald-500', 'text-emerald-600', 'dark:text-emerald-400');
+          correctCount++;
+        } else {
+          slot.classList.remove('border-brand-500', 'text-emerald-600');
+          slot.classList.add('border-rose-500', 'text-rose-600', 'dark:text-rose-400');
+          allCorrect = false;
+        }
+      }
+
+      if (allCorrect && total > 0) {
+        SoundFx.correct();
+      } else {
+        SoundFx.wrong();
+      }
+    }
+
+    // RENDER SPEED QUIZ
+    function renderQuizQuestion() {
+      const q = APP_DATA.quiz[state.quizIndex];
+      if (!q) return;
+
+      document.getElementById('quizCounter').textContent = `Câu ${state.quizIndex + 1} / ${APP_DATA.quiz.length}`;
+      document.getElementById('quizScoreText').textContent = `${state.quizScore * 10} điểm`;
+      document.getElementById('quizQuestion').textContent = q.question;
+      
+      const lessonNames = { 'bai1': 'Bài 1: Truyền thống VN', 'bai2': 'Bài 2: Đa dạng dân tộc', 'bai3': 'Bài 3: Cần cù, sáng tạo' };
+      document.getElementById('quizLessonTag').textContent = lessonNames[q.lesson] || 'GDCD 8';
+
+      const expEl = document.getElementById('quizExplanation');
+      expEl.className = "hidden p-4 rounded-2xl mb-6 text-xs sm:text-sm leading-relaxed";
+      document.getElementById('quizNextBtn').classList.add('hidden');
+
+      const container = document.getElementById('quizOptions');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-brand-400 transition font-medium text-xs sm:text-sm text-slate-800 dark:text-slate-200 flex items-center justify-between";
+        btn.innerHTML = `<span>${String.fromCharCode(65 + idx)}. ${opt}</span>`;
+        btn.addEventListener('click', () => handleQuizSelect(idx, btn));
+        container.appendChild(btn);
+      });
+    }
+
+    function handleQuizSelect(selectedIndex, selectedBtn) {
+      const q = APP_DATA.quiz[state.quizIndex];
+      const buttons = document.querySelectorAll('#quizOptions button');
+      buttons.forEach(b => b.classList.add('pointer-events-none'));
+
+      const expEl = document.getElementById('quizExplanation');
+      expEl.classList.remove('hidden');
+
+      if (selectedIndex === q.answer) {
+        selectedBtn.classList.remove('border-slate-200', 'bg-slate-50');
+        selectedBtn.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-700', 'dark:text-emerald-300');
+        expEl.classList.add('bg-emerald-50', 'dark:bg-emerald-950/50', 'border', 'border-emerald-200', 'dark:border-emerald-800', 'text-emerald-800', 'dark:text-emerald-200');
+        expEl.innerHTML = `<span class="font-bold block mb-1">🎉 Chính xác!</span>${q.explanation}`;
+        state.quizScore++;
+        SoundFx.correct();
+      } else {
+        selectedBtn.classList.remove('border-slate-200', 'bg-slate-50');
+        selectedBtn.classList.add('border-rose-500', 'bg-rose-500/10', 'text-rose-700', 'dark:text-rose-300');
+        
+        // Highlight correct button
+        if (buttons[q.answer]) {
+          buttons[q.answer].classList.remove('border-slate-200', 'bg-slate-50');
+          buttons[q.answer].classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-700', 'dark:text-emerald-300');
+        }
+
+        expEl.classList.add('bg-rose-50', 'dark:bg-rose-950/50', 'border', 'border-rose-200', 'dark:border-rose-800', 'text-rose-800', 'dark:text-rose-200');
+        expEl.innerHTML = `<span class="font-bold block mb-1">Chưa chính xác!</span>${q.explanation}`;
+        SoundFx.wrong();
+      }
+
+      document.getElementById('quizScoreText').textContent = `${state.quizScore * 10} điểm`;
+      document.getElementById('quizNextBtn').classList.remove('hidden');
+    }
+
+    function showQuizSummary() {
+      document.querySelector('#view-quiz > div').classList.add('hidden');
+      const sumCard = document.getElementById('quizSummaryCard');
+      sumCard.classList.remove('hidden');
+
+      const total = APP_DATA.quiz.length;
+      const pct = Math.round((state.quizScore / total) * 100);
+      document.getElementById('quizFinalCorrect').textContent = `${state.quizScore} / ${total}`;
+      document.getElementById('quizFinalAccuracy').textContent = `${pct}%`;
+      
+      let rank = 'Cần cố gắng';
+      if (pct >= 90) rank = 'Xuất sắc';
+      else if (pct >= 75) rank = 'Giỏi';
+      else if (pct >= 50) rank = 'Khá';
+      document.getElementById('quizFinalRank').textContent = rank;
+    }
+
+    // SWITCH MODES
+    function switchMode(newMode) {
+      state.currentMode = newMode;
+
+      // Update Header nav buttons
+      document.querySelectorAll('#modeNav .mode-btn').forEach(btn => {
+        if (btn.getAttribute('data-mode') === newMode) {
+          btn.className = "mode-btn flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-sm";
+        } else {
+          btn.className = "mode-btn flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs font-semibold rounded-md transition text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white";
+        }
+      });
+
+      // Show/Hide views
+      ['ladder', 'flashcard', 'cloze', 'quiz', 'cheat'].forEach(m => {
+        const el = document.getElementById('view-' + m);
+        if (el) {
+          if (m === newMode) el.classList.remove('hidden');
+          else el.classList.add('hidden');
+        }
+      });
+
+      // Update Sub-Bar description
+      const descMap = {
+        'ladder': 'Phương pháp Bậc thang Xóa chữ: Nhìn chữ cái đầu hoặc từ khóa để kích hoạt trí nhớ siêu tốc.',
+        'flashcard': 'Thẻ nhớ thông minh 3D: Luyện tập phản xạ Active Recall từng câu hỏi trong đề kiểm tra.',
+        'cloze': 'Trò chơi Điền khuyết: Luyện ghi nhớ chính xác từng từ ngữ bắt buộc phải có để đạt điểm 10.',
+        'quiz': 'Đấu trường Trắc nghiệm: 12 câu hỏi phản xạ nhanh bao quát toàn bộ 3 bài học.',
+        'cheat': 'Kho Mẹo thần tốc: Bài thơ lục bát 8 truyền thống & Bảng đối chiếu Cần cù vs Sáng tạo.'
+      };
+      document.getElementById('modeDescription').textContent = descMap[newMode] || '';
+
+      // Stop speech on mode switch
+      SpeechModule.stop();
+
+      // Trigger initial renders
+      if (newMode === 'ladder') renderLadderView();
+      else if (newMode === 'flashcard') setupFlashcards();
+      else if (newMode === 'cloze') renderClozeView();
+      else if (newMode === 'quiz') {
+        document.querySelector('#view-quiz > div').classList.remove('hidden');
+        document.getElementById('quizSummaryCard').classList.add('hidden');
+        renderQuizQuestion();
+      }
+    }
+
+    // SWITCH LESSON
+    function switchLesson(newLesson) {
+      state.currentLesson = newLesson;
+      
+      const titleMap = {
+        'all': 'Tất cả bài học (Bài 1, Bài 2, Bài 3)',
+        'bai1': 'Bài 1: Tự hào về truyền thống dân tộc Việt Nam',
+        'bai2': 'Bài 2: Tôn trọng sự đa dạng của các dân tộc',
+        'bai3': 'Bài 3: Lao động cần cù, sáng tạo'
+      };
+      const iconMap = {
+        'all': '📚',
+        'bai1': '🇻🇳',
+        'bai2': '🌏',
+        'bai3': '⚡'
+      };
+      const dateMap = {
+        'all': 'GDCD 8',
+        'bai1': 'T5, 10/9/26',
+        'bai2': 'GDCD 8',
+        'bai3': 'GDCD 8'
+      };
+
+      document.getElementById('activeLessonTitle').textContent = titleMap[newLesson] || '';
+      document.getElementById('activeLessonIcon').textContent = iconMap[newLesson] || '📚';
+      document.getElementById('activeDateBadge').textContent = dateMap[newLesson] || 'GDCD 8';
+
+      // Re-render current mode
+      if (state.currentMode === 'ladder') renderLadderView();
+      else if (state.currentMode === 'flashcard') setupFlashcards();
+      else if (state.currentMode === 'cloze') renderClozeView();
+    }
+
+    // INIT ALL EVENT LISTENERS
+    document.addEventListener('DOMContentLoaded', () => {
+      // Lesson Selector Change
+      document.getElementById('lessonSelect').addEventListener('change', (e) => {
+        switchLesson(e.target.value);
+        SoundFx.click();
+      });
+
+      // Mode Navigation
+      document.querySelectorAll('#modeNav .mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mode = btn.getAttribute('data-mode');
+          switchMode(mode);
+          SoundFx.click();
+        });
+      });
+
+      // Ladder Levels
+      document.querySelectorAll('.ladder-lvl-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lvl = parseInt(btn.getAttribute('data-level'));
+          state.ladderLevel = lvl;
+
+          // Update active styles
+          document.querySelectorAll('.ladder-lvl-btn').forEach(b => {
+            b.classList.remove('bg-indigo-600', 'text-white');
+            b.classList.add('text-slate-600', 'dark:text-slate-400');
+          });
+          btn.classList.add('bg-indigo-600', 'text-white');
+          btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+
+          const lvlNames = {
+            1: 'Cấp 1: Đọc hiểu',
+            2: 'Cấp 2: Chữ cái đầu',
+            3: 'Cấp 3: Che từ khóa',
+            4: 'Cấp 4: Thử thách 100%'
+          };
+          document.getElementById('levelBadge').textContent = lvlNames[lvl] || '';
+
+          renderLadderView();
+          SoundFx.click();
+        });
+      });
+
+      // Ladder Reveal All
+      document.getElementById('ladderRevealAllBtn').addEventListener('click', () => {
+        document.querySelectorAll('[id^="reveal_"]').forEach(el => el.classList.remove('hidden'));
+        document.querySelectorAll('.blur-mask').forEach(el => el.classList.add('revealed'));
+        SoundFx.click();
+      });
+
+      // Flashcard Events
+      document.getElementById('flashcardElement').addEventListener('click', flipFlashcard);
+      
+      document.getElementById('fcPrevBtn').addEventListener('click', () => {
+        if (state.fcIndex > 0) {
+          state.fcIndex--;
+          renderCurrentFlashcard();
+          SoundFx.click();
+        }
+      });
+
+      document.getElementById('fcNextBtn').addEventListener('click', () => {
+        if (state.fcIndex < state.fcCards.length - 1) {
+          state.fcIndex++;
+          renderCurrentFlashcard();
+          SoundFx.click();
+        }
+      });
+
+      document.getElementById('fcEasyBtn').addEventListener('click', () => {
+        const card = state.fcCards[state.fcIndex];
+        state.masteryMap['fc_' + (state.fcIndex + 1)] = true;
+        try {
+          localStorage.setItem('gdcd8_mastery', JSON.stringify(state.masteryMap));
+        } catch(e) {}
+        updateMasteryDisplay();
+        SoundFx.correct();
+
+        // Advance to next card if available
+        if (state.fcIndex < state.fcCards.length - 1) {
+          state.fcIndex++;
+          renderCurrentFlashcard();
+        }
+      });
+
+      document.getElementById('fcHardBtn').addEventListener('click', () => {
+        const card = state.fcCards[state.fcIndex];
+        state.masteryMap['fc_' + (state.fcIndex + 1)] = false;
+        try {
+          localStorage.setItem('gdcd8_mastery', JSON.stringify(state.masteryMap));
+        } catch(e) {}
+        updateMasteryDisplay();
+        SoundFx.wrong();
+
+        if (state.fcIndex < state.fcCards.length - 1) {
+          state.fcIndex++;
+          renderCurrentFlashcard();
+        }
+      });
+
+      document.getElementById('fcShuffleBtn').addEventListener('click', () => {
+        state.fcCards.sort(() => Math.random() - 0.5);
+        state.fcIndex = 0;
+        renderCurrentFlashcard();
+        SoundFx.click();
+      });
+
+      document.getElementById('fcResetBtn').addEventListener('click', () => {
+        state.fcIndex = 0;
+        state.masteryMap = {};
+        try {
+          localStorage.removeItem('gdcd8_mastery');
+        } catch(e) {}
+        updateMasteryDisplay();
+        setupFlashcards();
+        SoundFx.click();
+      });
+
+      // Spacebar to flip flashcard
+      document.addEventListener('keydown', (e) => {
+        if (state.currentMode === 'flashcard' && e.code === 'Space') {
+          e.preventDefault();
+          flipFlashcard();
+        }
+      });
+
+      // Cloze Check & Reset
+      document.getElementById('clozeCheckBtn').addEventListener('click', checkClozeAnswers);
+      document.getElementById('clozeResetBtn').addEventListener('click', () => {
+        renderClozeView();
+        SoundFx.click();
+      });
+
+      // Quiz Next & Restart
+      document.getElementById('quizNextBtn').addEventListener('click', () => {
+        if (state.quizIndex < APP_DATA.quiz.length - 1) {
+          state.quizIndex++;
+          renderQuizQuestion();
+          SoundFx.click();
+        } else {
+          showQuizSummary();
+          SoundFx.correct();
+        }
+      });
+
+      document.getElementById('quizRestartBtn').addEventListener('click', () => {
+        state.quizIndex = 0;
+        state.quizScore = 0;
+        renderQuizQuestion();
+        SoundFx.click();
+      });
+
+      document.getElementById('quizRetryAllBtn').addEventListener('click', () => {
+        state.quizIndex = 0;
+        state.quizScore = 0;
+        document.querySelector('#view-quiz > div').classList.remove('hidden');
+        document.getElementById('quizSummaryCard').classList.add('hidden');
+        renderQuizQuestion();
+        SoundFx.click();
+      });
+
+      // TTS Toggle Button
+      document.getElementById('ttsBtn').addEventListener('click', () => {
+        SpeechModule.toggle(() => {
+          const secs = getActiveSections();
+          return secs.map(s => `${s.heading}: ${s.fullText}`).join('. ');
+        });
+      });
+
+      // Dark Mode Toggle
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = document.getElementById('themeIcon');
+      
+      const setDark = (dark) => {
+        if (dark) {
+          document.documentElement.classList.add('dark');
+          themeIcon.textContent = '☀️';
+        } else {
+          document.documentElement.classList.remove('dark');
+          themeIcon.textContent = '🌙';
+        }
+        try {
+          localStorage.setItem('gdcd8_theme', dark ? 'dark' : 'light');
+        } catch(e) {}
+      };
+
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        setDark(!isDark);
+        SoundFx.click();
+      });
+
+      // Restore theme
+      try {
+        const savedTheme = localStorage.getItem('gdcd8_theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          setDark(true);
+        } else {
+          setDark(false);
+        }
+      } catch(e) {}
+
+      // Initialize initial view
+      updateMasteryDisplay();
+      
+      // Select Level 2 initially for Ladder
+      const lvl2Btn = document.querySelector('.ladder-lvl-btn[data-level="2"]');
+      if (lvl2Btn) {
+        lvl2Btn.classList.add('bg-indigo-600', 'text-white');
+      }
+
+      switchMode('ladder');
+    });
+  </script>
+
+</body>
+</html>
